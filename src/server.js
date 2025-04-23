@@ -6,15 +6,20 @@
  */
 
 import express from 'express'
+import cors from 'cors'
 import exitHook from 'async-exit-hook'
+import { corsOptions } from './config/cors'
 import { CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
 import { env } from '~/config/environment'
 import { APIs_V1 } from '~/routes/v1'
 import { errorHandlingMiddleware } from '~/middlewares/errorHandlingMiddleware'
 
+
 const START_SERVER = () => {
 
   const app = express()
+  //xử lý lỗi cors
+  app.use(cors(corsOptions)) // enable cors
 
   // enable req.body joson data
   app.use(express.json())
