@@ -1,6 +1,7 @@
 import Joi from 'joi' // joi doc
 import { StatusCodes } from 'http-status-codes'
 import ApiError from '~/utils/ApiError'
+import { BOARD_TYPES } from '~/utils/constants' // import BOARD_TYPES tu constants.js
 
 const CreateNew = async ( req, res, next ) => {
   /**
@@ -13,9 +14,10 @@ const CreateNew = async ( req, res, next ) => {
 
   const correctCondition = Joi.object({
     title: Joi.string().required().min(3).max(50).trim().strict().messages({
-      // messages => dung de custom message video 52 trungquandev 
+      // messages => dung de custom message video 52 trungquandev
     }),
-    description: Joi.string().required().min(3).max(256).trim().strict()
+    description: Joi.string().required().min(3).max(256).trim().strict(),
+    type: Joi.string().valid(BOARD_TYPES.PUBLIC, BOARD_TYPES.PRIVATE).required()
   })
 
   try {
