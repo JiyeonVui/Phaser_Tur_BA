@@ -17,4 +17,8 @@ Router.route('/')
   })
   .post(boardValidation.CreateNew, boardController.createNew) // ko co () => dinh nghia function ko phai thuc thi function
 
+Router.route('/:id')
+  .get(boardController.getDetails)
+  .put()
+
 export const boardRoute = Router
