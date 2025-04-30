@@ -10,7 +10,7 @@ import Joi from "joi"
 import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from "~/utils/validator"
 import { GET_DB } from '~/config/mongodb'
 // eslint-disable-next-line quotes
-import { ObjectId } from 'mongodb'
+import { ObjectId, ReturnDocument } from 'mongodb'
 import { BOARD_TYPES } from '~/utils/constants'
 import { columnModel } from './columnModel'
 import { cardModel } from './cardModel'
@@ -77,8 +77,22 @@ const getDetails = async (id) => {
         as:'cards'
       } }
     ]).toArray()
-    console.log('result', result)
-    return result[0] || {}
+    return result[0] || null
+  } catch (error) { throw new Error(error) }
+}
+// Push columnOrderIds vào cuoi mang columnOrderIds board
+const pushColumnOrderIds = async (column) => {
+  try {
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(column.boardId) },
+      { $push: { columnOrderIds: new ObjectId(column._id) } },
+      { returnDocument: 'after' }
+    )
+    // console.log('result', result.value)
+    // console.log('column', column.boardId)
+
+    return result.value || null
+
   } catch (error) { throw new Error(error) }
 }
 
@@ -87,5 +101,6 @@ export const boardModel = {
   BOARD_COLLECTION_SCHEMA,
   createNew,
   findOneById,
-  getDetails
+  getDetails,
+  pushColumnOrderIds
 }

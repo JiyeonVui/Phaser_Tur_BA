@@ -31,7 +31,7 @@ const START_SERVER = () => {
 
   app.listen(env.APP_PORT, env.APP_HOST, () => {
     // eslint-disable-next-line no-console
-    exitHook(()=>{
+    exitHook(() => {
       console.log('4. Disconnecting')
       CLOSE_DB()
       console.log('5. Disconnected')
