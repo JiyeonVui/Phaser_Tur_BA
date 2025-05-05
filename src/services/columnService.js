@@ -33,6 +33,21 @@ const createNew = async ( reqBody ) => {
   } catch (error) { throw error }
 }
 
+const update = async ( columnId, reqBody ) => {
+  try {
+    const updateData = {
+      ...reqBody,
+      updateAt: Date.now()
+    }
+    // goi toi tang model de xu ly ban ghi new board trong database
+    const updateColumn = await columnModel.update(columnId, updateData)
+
+    return updateColumn
+
+  } catch (error) { throw error }
+}
+
 export const columnService = {
-  createNew
+  createNew,
+  update
 }

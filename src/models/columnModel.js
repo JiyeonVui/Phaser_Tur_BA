@@ -11,6 +11,8 @@ import { ObjectId } from 'mongodb'
 
 // Define Collection (name & schema)
 const COLUMN_COLLECTION_NAME = 'columns'
+const INVALID_UPDATE_FILEDS = ['id', 'boardId', 'createAt']
+
 const COLUMN_COLLECTION_SCHEMA = Joi.object({
   boardId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
   title: Joi.string().required().min(3).max(50).trim().strict(),
@@ -66,10 +68,34 @@ const pushCardOrderIds = async (card) => {
   } catch (error) { throw new Error(error) }
 }
 
+
+const update = async (columnId, updateData) => {
+  try {
+    // Loc field ma chung ta ko cho phep cap nhat linh tinh
+    Object.keys(updateData).forEach( filedName => {
+      if (INVALID_UPDATE_FILEDS.includes(filedName)) {
+        delete updateData[filedName]
+      }
+    })
+
+    const result = await GET_DB().collection(COLUMN_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(columnId) },
+      { $set: updateData },
+      { returnDocument: 'after' }
+    )
+    // console.log('result', result.value)
+    // console.log('column', column.boardId)
+
+    return result
+
+  } catch (error) { throw new Error(error) }
+}
+
 export const columnModel = {
   COLUMN_COLLECTION_NAME,
   COLUMN_COLLECTION_SCHEMA,
   createNew,
   findOneById,
-  pushCardOrderIds
+  pushCardOrderIds,
+  update
 }

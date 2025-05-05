@@ -27,6 +27,35 @@ const CreateNew = async ( req, res, next ) => {
   }
 }
 
+const update = async ( req, res, next ) => {
+  /**
+   * Ko dung required trong th update
+  */
+  console.log('Update column')
+  const correctCondition = Joi.object({
+    // Neu can lam tinh nang di chuyen column sang board khac thi moi them validate board id
+    // boardId: Joi.string().pattern(OBJECT_ID_RULE).messages(OBJECT_ID_RULE_MESSAGE),
+    title: Joi.string().min(3).max(50).trim().strict(),
+    cardOrderIds: Joi.array().items(
+      Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
+    )
+  })
+
+  try {
+    await correctCondition.validateAsync(req.body, {
+      abortEarly: false,
+      allowUnknown: true
+    })
+
+    next() // => dung cho controller
+
+  } catch (error) {
+    next(new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error).message))
+  }
+}
+
+
 export const columnValidation = {
-  CreateNew
+  CreateNew,
+  update
 }

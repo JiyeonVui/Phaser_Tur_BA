@@ -31,6 +31,8 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
   UpdatedAt: Joi.date().timestamp('javascript').default(null),
   _destroy: Joi.bool().default(false)
 })
+// chi ra nhung fileds ma chung ta ko muon cho phep cap nhat trong ham update
+const INVALID_UPDATE_FILEDS = ['id', 'createAt']
 
 const validateBeforeCreate = async (data) => {
   return await BOARD_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
@@ -91,7 +93,29 @@ const pushColumnOrderIds = async (column) => {
     // console.log('result', result.value)
     // console.log('column', column.boardId)
 
-    return result.value || null
+    return result
+
+  } catch (error) { throw new Error(error) }
+}
+
+const update = async (boardId, updateData) => {
+  try {
+    // Loc field ma chung ta ko cho phep cap nhat linh tinh
+    Object.keys(updateData).forEach( filedName => {
+      if (INVALID_UPDATE_FILEDS.includes(filedName)) {
+        delete updateData[filedName]
+      }
+    })
+
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(boardId) },
+      { $set: updateData },
+      { returnDocument: 'after' }
+    )
+    // console.log('result', result.value)
+    // console.log('column', column.boardId)
+
+    return result
 
   } catch (error) { throw new Error(error) }
 }
@@ -102,5 +126,6 @@ export const boardModel = {
   createNew,
   findOneById,
   getDetails,
-  pushColumnOrderIds
+  pushColumnOrderIds,
+  update
 }

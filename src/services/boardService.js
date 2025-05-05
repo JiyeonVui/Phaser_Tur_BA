@@ -42,7 +42,7 @@ const getDetails = async ( boardId ) => {
     const resBoard = cloneDeep(board)
     // B2 Dua card ve dung column cua no
     resBoard.columns.forEach(column => {
-      column.cards = resBoard.cards.filter(card => 
+      column.cards = resBoard.cards.filter(card =>
         // card.columnId.toString() === column._id.toString()
         // console.log('card.columnId', card.columnId)
         card.columnId.equals(column._id)
@@ -56,7 +56,22 @@ const getDetails = async ( boardId ) => {
   } catch (error) { throw error }
 }
 
+const update = async ( boardId, reqBody ) => {
+  try {
+    const updateData = {
+      ...reqBody,
+      updateAt: Date.now()
+    }
+    // goi toi tang model de xu ly ban ghi new board trong database
+    const updateBoard = await boardModel.update(boardId, updateData)
+
+    return updateBoard
+
+  } catch (error) { throw error }
+}
+
 export const boardService = {
   createNew,
-  getDetails
+  getDetails,
+  update
 }

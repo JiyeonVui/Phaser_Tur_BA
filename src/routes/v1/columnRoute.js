@@ -13,5 +13,7 @@ const Router = express.Router()
 Router.route('/')
   .post(columnValidation.CreateNew, columnController.createNew) // ko co () => dinh nghia function ko phai thuc thi function
 
+Router.route('/:id')
+  .put(columnValidation.update, columnController.update)
 
 export const columnRoute = Router
