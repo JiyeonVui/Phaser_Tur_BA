@@ -11,6 +11,8 @@ import { GET_DB } from '~/config/mongodb'
 
 // Define Collection (name & schema)
 const CARD_COLLECTION_NAME = 'cards'
+const INVALID_UPDATE_FILEDS = ['_id', 'boardId', 'createAt']
+
 const CARD_COLLECTION_SCHEMA = Joi.object({
   boardId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
   columnId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
@@ -50,10 +52,36 @@ const findOneById = async (id) => {
   } catch (error) { throw new Error(error) }
 }
 
+const update = async (cardId, updateData) => {
+  try {
+    // Loc field ma chung ta ko cho phep cap nhat linh tinh
+    Object.keys(updateData).forEach( filedName => {
+      if (INVALID_UPDATE_FILEDS.includes(filedName)) {
+        delete updateData[filedName]
+      }
+    })
+
+    if (updateData.columnId) {
+      updateData.columnId = new ObjectId(updateData.columnId)
+    }
+
+    const result = await GET_DB().collection(CARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(cardId) },
+      { $set: updateData },
+      { returnDocument: 'after' }
+    )
+    // console.log('result', result.value)
+    // console.log('column', column.boardId)
+
+    return result
+
+  } catch (error) { throw new Error(error) }
+}
 
 export const cardModel = {
   CARD_COLLECTION_NAME,
   CARD_COLLECTION_SCHEMA,
   createNew,
-  findOneById
+  findOneById,
+  update
 }

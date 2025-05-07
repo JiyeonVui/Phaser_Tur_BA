@@ -11,7 +11,7 @@ import { ObjectId } from 'mongodb'
 
 // Define Collection (name & schema)
 const COLUMN_COLLECTION_NAME = 'columns'
-const INVALID_UPDATE_FILEDS = ['id', 'boardId', 'createAt']
+const INVALID_UPDATE_FILEDS = ['_id', 'boardId', 'createAt']
 
 const COLUMN_COLLECTION_SCHEMA = Joi.object({
   boardId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
@@ -77,6 +77,10 @@ const update = async (columnId, updateData) => {
         delete updateData[filedName]
       }
     })
+
+    if ( updateData.cardOrderIds) {
+      updateData.cardOrderIds = updateData.cardOrderIds.map( _id => (new ObjectId(_id)))
+    }
 
     const result = await GET_DB().collection(COLUMN_COLLECTION_NAME).findOneAndUpdate(
       { _id: new ObjectId(columnId) },

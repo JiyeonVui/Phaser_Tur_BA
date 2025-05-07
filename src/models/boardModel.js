@@ -32,7 +32,7 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
   _destroy: Joi.bool().default(false)
 })
 // chi ra nhung fileds ma chung ta ko muon cho phep cap nhat trong ham update
-const INVALID_UPDATE_FILEDS = ['id', 'createAt']
+const INVALID_UPDATE_FILEDS = ['_id', 'createAt']
 
 const validateBeforeCreate = async (data) => {
   return await BOARD_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
