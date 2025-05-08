@@ -9,6 +9,9 @@
 import { get } from "lodash"
 import { columnModel } from "~/models/columnModel"
 import { boardModel } from "~/models/boardModel" 
+import { cardModel } from "~/models/cardModel"
+import ApiError from "~/utils/ApiError"
+import { StatusCodes } from "http-status-codes"
 
 const createNew = async ( reqBody ) => {
   try {
@@ -47,7 +50,24 @@ const update = async ( columnId, reqBody ) => {
   } catch (error) { throw error }
 }
 
+const deleteItem = async ( columnId ) => {
+  const targetColumn = await columnModel.findOneById(columnId)
+
+  if (!targetColumn) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'Column not found')
+  }
+
+  // xoa columnId trong columnOderids cua board
+  await boardModel.pullColumnOrderIds(targetColumn)
+  // xoa column
+  await columnModel.deleteOneById(columnId)
+  // xoa card thuoc column tren
+  await cardModel.deleteManyByColumnId(columnId)
+  return { deleteResult: 'Column and its card deleted successfully!' }
+}
+
 export const columnService = {
   createNew,
-  update
+  update,
+  deleteItem
 }
