@@ -29,16 +29,25 @@ const START_SERVER = () => {
   // Middleware xu ly loi tap trung
   app.use(errorHandlingMiddleware)
 
-  app.listen(env.APP_PORT, env.APP_HOST, () => {
-    // eslint-disable-next-line no-console
-    exitHook(() => {
-      console.log('4. Disconnecting')
-      CLOSE_DB()
-      console.log('5. Disconnected')
+  if (env.BUILD_MODE === 'production') {
+    // moi truong production
+    app.listen(process.env.PORT, () => {
+      console.log(`Hello ${env.AUTHOR}, I am running PRODUCTION at PORT:${ process.env.PORT }`)
     })
+  } else {
+    app.listen(env.APP_PORT, env.APP_HOST, () => {
+      // eslint-disable-next-line no-console
+      exitHook(() => {
+        console.log('4. Disconnecting')
+        CLOSE_DB()
+        console.log('5. Disconnected')
+      })
 
-    console.log(`Hello ${env.AUTHOR}, I am running at http://${ env.APP_HOST }:${ env.APP_PORT }/`)
-  })
+      console.log(`Hello ${env.AUTHOR}, I am running at http://${ env.APP_HOST }:${ env.APP_PORT }/`)
+    })
+  }
+
+
 }
 
 // IIFE javascript
