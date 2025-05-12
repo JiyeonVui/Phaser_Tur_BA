@@ -6,6 +6,7 @@
 export const WHITELIST_DOMAINS = [
   // 'http://localhost:5173'
   // ko can local host nua vi da luon cho phep moi truong dev
+  'https://trello-clone-pi-ten.vercel.app/'
 ]
 
 export const BOARD_TYPES = {
