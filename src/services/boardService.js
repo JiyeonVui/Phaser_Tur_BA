@@ -88,12 +88,11 @@ const moveCardToDifferentColumn = async ( reqBody ) => {
     })
 
     // Cap nhat lai ColumnId cua card da keo
-
+    console.log('reqBody.nextcolumId', reqBody.nextColumnId)
     await cardModel.update(reqBody.currentCardId, {
       columnId: reqBody.nextColumnId,
       updateAt: Date.now()
     })
-
     return { updateResult : 'Successfully!' }
 
   } catch (error) { throw error }

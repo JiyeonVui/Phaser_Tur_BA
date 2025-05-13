@@ -71,7 +71,7 @@ const moveCardToDifferentColumn = async ( req, res, next ) => {
   const correctCondition = Joi.object({
     currentCardId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
     prevColumnId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
-    prevCardOderIds : Joi.array().required().items(
+    prevCardOrderIds : Joi.array().required().items(
       Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
     ),
     nextColumnId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
