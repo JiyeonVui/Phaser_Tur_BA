@@ -75,8 +75,8 @@ const update = async ( boardId, reqBody ) => {
 const moveCardToDifferentColumn = async ( reqBody ) => {
   try {
     // update mang CardOrderIds cua column ban dau chua card
-    // console.log('prev card order ids', reqBody.prevCardOrderIds)
-    // console.log('next card order ids', reqBody.nextCardOrderIds)
+    console.log('prev card order ids', reqBody.prevCardOrderIds)
+    console.log('next card order ids', reqBody.nextCardOrderIds)
     await columnModel.update(reqBody.prevColumnId, {
       cardOrderIds : reqBody.prevCardOrderIds,
       updateAt : Date.now()
@@ -90,7 +90,8 @@ const moveCardToDifferentColumn = async ( reqBody ) => {
     // Cap nhat lai ColumnId cua card da keo
 
     await cardModel.update(reqBody.currentCardId, {
-      columnId: reqBody.nextColumnId
+      columnId: reqBody.nextColumnId,
+      updateAt: Date.now()
     })
 
     return { updateResult : 'Successfully!' }
